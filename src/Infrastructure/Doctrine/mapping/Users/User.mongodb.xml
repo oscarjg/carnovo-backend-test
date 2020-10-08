@@ -1,0 +1,15 @@
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                        https://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd"
+>
+
+    <document name="App\Infrastructure\Session\User">
+        <id strategy="uuid"/>
+        <field name="username" type="string" />
+        <field name="password" type="string" />
+        <field name="salt" type="string" />
+        <reference-many field="favoriteCars" target-document="App\Domain\Cars\Model\Car"/>
+    </document>
+
+</doctrine-mongo-mapping>

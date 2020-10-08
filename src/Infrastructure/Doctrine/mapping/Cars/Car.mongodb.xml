@@ -1,0 +1,22 @@
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                        https://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd"
+>
+
+    <document name="App\Domain\Cars\Model\Car">
+        <id strategy="UUID"/>
+        <field field-name="brand" type="string" />
+        <field field-name="model" type="string" />
+        <field name="priceEU" type="int" />
+        <field name="priceUS" type="int" />
+        <indexes>
+            <index>
+                <option name="unique" value="true" />
+                <key name="brand" order="asc" />
+                <key name="model" order="asc" />
+            </index>
+        </indexes>
+    </document>
+
+</doctrine-mongo-mapping>

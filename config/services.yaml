@@ -1,0 +1,42 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    env(MONGODB_URL): ''
+    env(MONGODB_DB): ''
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    App\Infrastructure\Controller\:
+        resource: '../src/Infrastructure/Controller'
+        tags: ['controller.service_arguments']
+
+    App\Infrastructure\Repository\:
+        resource: '../src/Infrastructure/Repository/*'
+    App\Domain\Users\Contract\UserRepositoryInterface: '@App\Infrastructure\Repository\DoctrineUserRepository'
+    App\Domain\Cars\Contract\CarRepositoryInterface: '@App\Infrastructure\Repository\DoctrineCarRepository'
+
+    App\Infrastructure\Serializer\:
+        resource: '../src/Infrastructure/Serializer/*'
+
+    App\Infrastructure\Session\UserStorage: ~
+    App\Domain\Users\Contract\UserStorageInterface: '@App\Infrastructure\Session\UserStorage'
+
+    App\Infrastructure\EventListener\ApiExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Infrastructure\Command\:
+        resource: '../src/Infrastructure/Command/*'
+        tags:
+            - { name: console.command }
+
+    App\DataFixtures\:
+        resource: '../src/DataFixtures/*'
+        tags: ['doctrine.fixture.odm.mongodb']
