@@ -9,6 +9,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "doctrine/mongodb-odm-bundle": "^4.2",
+        "guzzlehttp/guzzle": "^7.1",
         "lexik/jwt-authentication-bundle": "^2.8",
         "nelmio/cors-bundle": "^2.0",
         "php-amqplib/php-amqplib": "^2.12",

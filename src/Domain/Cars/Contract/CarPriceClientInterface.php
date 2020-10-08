@@ -12,5 +12,5 @@ use App\Domain\Cars\ValueObject\BrandModelCar;
  */
 interface CarPriceClientInterface
 {
-    public function fetchPrice(BrandModelCar $brandModelCar): int;
+    public function fetchPrice(BrandModelCar $brandModelCar);
 }

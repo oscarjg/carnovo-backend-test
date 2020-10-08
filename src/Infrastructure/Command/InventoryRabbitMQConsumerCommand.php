@@ -6,8 +6,9 @@ use App\Application\CarInventoryUseCase;
 use App\Domain\Cars\Contract\CarRepositoryInterface;
 use App\Domain\Cars\ValueObject\BrandModelCar;
 use App\Infrastructure\Helpers\MongoUUIDCarIdGenerator;
-use App\Infrastructure\Helpers\PriceUEResolver;
+use App\Infrastructure\Helpers\CarPriceResolver;
 use App\Infrastructure\Helpers\PriceUSResolver;
+use GuzzleHttp\Client;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -126,6 +127,7 @@ class InventoryRabbitMQConsumerCommand extends AbstractConsumerCommand
              */
             $channel     = $msg->getChannel();
             $deliveryTag = $msg->getDeliveryTag();
+            $httpClient  = new Client();
 
             try {
                 $output->writeln(
@@ -136,15 +138,14 @@ class InventoryRabbitMQConsumerCommand extends AbstractConsumerCommand
                 $data = json_decode($msg->body, true);
 
                 $carModel = new BrandModelCar($data["brand"], $data["model"]);
-                $priceEU  = (new PriceUEResolver())->fetchPrice($carModel);
-                $priceUS  = (new PriceUSResolver())->fetchPrice($carModel);
+                $prices  = (new CarPriceResolver($httpClient))->fetchPrice($carModel);
 
                 $useCase = new CarInventoryUseCase(
                     $this->carRepository,
                     new MongoUUIDCarIdGenerator()
                 );
 
-                $useCase($carModel, $priceEU, $priceUS);
+                $useCase($carModel, $prices[0], $prices[1]);
 
                 $channel->basic_ack($deliveryTag);
 
