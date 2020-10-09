@@ -28,9 +28,20 @@ services:
     App\Infrastructure\Session\UserStorage: ~
     App\Domain\Users\Contract\UserStorageInterface: '@App\Infrastructure\Session\UserStorage'
 
+
+    App\Infrastructure\Exception\HttpExceptionHandler:
+        arguments: [!tagged app.exception.factory.http]
+
+    App\Infrastructure\Exception\HttpBadRequestExceptionFactory:
+        tags:
+            - { name: app.exception.factory.http }
+
     App\Infrastructure\EventListener\ApiExceptionListener:
+        arguments:
+            - '@App\Infrastructure\Exception\HttpExceptionHandler'
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
 
     App\Infrastructure\Command\:
         resource: '../src/Infrastructure/Command/*'

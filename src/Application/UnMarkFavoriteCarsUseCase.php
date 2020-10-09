@@ -5,7 +5,7 @@ namespace App\Application;
 use App\Domain\Cars\Contract\CarRepositoryInterface;
 use App\Domain\Users\Contract\UserRepositoryInterface;
 use App\Domain\Users\Model\User;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Domain\Cars\Exception\FavoriteCarNotFoundException;
 
 /**
  * Class UnMarkFavoriteCarsUseCase
@@ -42,6 +42,8 @@ class UnMarkFavoriteCarsUseCase
     /**
      * @param string $carId
      * @param User $user
+     *
+     * @throws FavoriteCarNotFoundException
      */
     public function __invoke(
         string $carId,
@@ -53,7 +55,7 @@ class UnMarkFavoriteCarsUseCase
             ->findCar($carId);
 
         if ($car === null) {
-            throw new HttpException(404, sprintf("Car %s not found", $carId));
+            throw new FavoriteCarNotFoundException(sprintf("Car %s not found", $carId));
         }
 
         $user->unMarkFavoriteCar($car);
